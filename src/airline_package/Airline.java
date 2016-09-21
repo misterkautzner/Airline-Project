@@ -33,7 +33,7 @@ public class Airline extends JFrame{
 		
 		setTitle("Airline Flight Form");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(400, 250);
+		setSize(500, 250);
 		// Centers frame to middle of screen
 		setLocationRelativeTo(null);
 		setResizable(true);
@@ -45,12 +45,11 @@ public class Airline extends JFrame{
 		
 		JPanel panelForm = new JPanel(new GridBagLayout());
 		panelMain.add(panelForm);
-//		getContentPane().add(panelForm);
 		
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
 		c.gridy = 0;
-		c.anchor = GridBagConstraints.LINE_END;  // Right aligns the following labels
+		c.anchor = GridBagConstraints.LINE_END; 
 		
 		
 		panelForm.add(new JLabel("First Name: "), c);
@@ -69,8 +68,8 @@ public class Airline extends JFrame{
 		
 		c.gridx = 1;
 		c.gridy = 0;
-		c.anchor = GridBagConstraints.LINE_START;  //  Left aligns the following text fields
-		// fieldName = new JTextField();
+		c.anchor = GridBagConstraints.LINE_START;  
+		
 		fieldFirstName = new JTextField(12);	
 		panelForm.add(fieldFirstName, c);
 		c.gridy++;
@@ -93,8 +92,6 @@ public class Airline extends JFrame{
 		panelForm.add(fieldTravelDate, c);
 		
 		
-		
-		// Make an action listener connected to a submit button that grabs all of these
 		buttonSubmit = new JButton("Submit");
 		buttonSubmit.addActionListener(new ActionListener() {
 			@Override
@@ -120,9 +117,6 @@ public class Airline extends JFrame{
 				catch(ParseException parseEx) {
 					dateOfBirth = null; //new SimpleDateFormat("yyyy-mm-dd").parse("0000-00-00");
 				}
-				//String dateOfBirth = fieldDateOfBirth.getText();
-				
-				
 				String placeOfDeparture = fieldPlaceOfDeparture.getText();
 				String destination = fieldDestination.getText();
 				
@@ -135,15 +129,14 @@ public class Airline extends JFrame{
 				catch(ParseException parseEx) {
 					travelDate = null; 
 				}
-				//String travelDate = fieldTravelDate.getText();
 				if (age == -1) 
 					labelMessage.setText("Age must be an integer.");
 				
 				else if (dateOfBirth == null)
-					labelMessage.setText("Date of Birth must be in form: 'yyyy-mm-dd'");
+					labelMessage.setText("Date of Birth: 'yyyy-mm-dd'");
 				
 				else if (travelDate == null)
-					labelMessage.setText("Travel Date must be in form: 'yyyy-mm-dd'");
+					labelMessage.setText("Travel Date: 'yyyy-mm-dd'");
 				
 				else if (firstName.isEmpty() || lastName.isEmpty() ||
 						placeOfDeparture.isEmpty() || destination.isEmpty()) {
