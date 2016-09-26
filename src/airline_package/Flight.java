@@ -13,16 +13,16 @@ public class Flight {
 	
 	public static void main(String args[]) {
 		
-//		printPassengers();
-//		System.out.println("");
-//		System.out.println("");
-//		System.out.println("");
-//		
-//		Traveler sadGuy = passengerList.get(22);
-//		System.out.println(sadGuy);
-//		airlineDAO.cancelFlight(sadGuy);
+		printPassengers();
+		System.out.println("");
+		System.out.println("");
+		System.out.println("");
 		
-//		System.out.println(getPassengerList());
+		Traveler sadGuy = passengerList.get(22);
+		System.out.println(sadGuy);
+		airlineDAO.cancelFlight(sadGuy);
+		
+		System.out.println(getPassengerList());
 		
 		
 	}
