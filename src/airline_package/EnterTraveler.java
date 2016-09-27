@@ -21,27 +21,30 @@ public class EnterTraveler extends JFrame{
 	
 	private JTextField fieldFirstName;
 	private JTextField fieldLastName;
-	private JTextField fieldAge;
-	private JTextField fieldDateOfBirth;
-	private JTextField fieldPlaceOfDeparture;
-	private JTextField fieldDestination;
-	private JTextField fieldTravelDate;
 
-	public EnterTraveler() {
-		createView();
+	private JTextField fieldDateOfBirth;
+	private JTextField fieldEmail;
+	private JTextField fieldUserName;
+	private JTextField fieldPassword;
+
+	public EnterTraveler(JPanel mainPanel) {
+//		enterTView();
+//		
+//		setTitle("Passenger Information Form");
+//		setDefaultCloseOperation(EXIT_ON_CLOSE);
+//		setSize(800, 450);
+//		// Centers frame to middle of screen
+//		setLocationRelativeTo(null);
+//		setResizable(true);
+//	}
+//	
+//	private void enterTView() {
 		
-		setTitle("Passenger Information Form");
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setSize(800, 450);
-		// Centers frame to middle of screen
-		setLocationRelativeTo(null);
-		setResizable(true);
-	}
-	
-	private void createView() {
-		
+		//JFrame frame = null;
+		//JPanel contentFrame = (JPanel) frame.getContentPane();
 		JPanel panelForm = new JPanel(new GridBagLayout());
-		getContentPane().add(panelForm);
+//		JPanel mainPanel = (JPanel) getContentPane().add(panelForm);
+		mainPanel.add(panelForm);
 			
 		GridBagConstraints c = new GridBagConstraints();
 		c.gridx = 0;
@@ -74,12 +77,7 @@ public class EnterTraveler extends JFrame{
 		fieldLastName = new JTextField(14);
 		p2.add(fieldLastName);
 		
-		c.gridy++;
-		JPanel p3 = new JPanel();
-		panelForm.add(p3, c);
-		p3.add(new JLabel("Age: "));
-		fieldAge = new JTextField(14);
-		p3.add(fieldAge);
+
 		
 		c.gridy++;
 		JPanel p4 = new JPanel();
@@ -91,23 +89,23 @@ public class EnterTraveler extends JFrame{
 		c.gridy++;
 		JPanel p5 = new JPanel();
 		panelForm.add(p5, c);
-		p5.add(new JLabel("Place of Departure: "));
-		fieldPlaceOfDeparture = new JTextField(14);
-		p5.add(fieldPlaceOfDeparture);
+		p5.add(new JLabel("Email Address: "));
+		fieldEmail = new JTextField(14);
+		p5.add(fieldEmail);
 		
 		c.gridy++;
 		JPanel p6 = new JPanel();
 		panelForm.add(p6, c);
-		p6.add(new JLabel("Destination: "));
-		fieldDestination = new JTextField(14);
-		p6.add(fieldDestination);
+		p6.add(new JLabel("Username: "));
+		fieldUserName = new JTextField(14);
+		p6.add(fieldUserName);
 		
 		c.gridy++;
 		JPanel p7 = new JPanel();
 		panelForm.add(p7, c);
-		p7.add(new JLabel("Travel Date: "));
-		fieldTravelDate = new JTextField(14);
-		p7.add(fieldTravelDate);
+		p7.add(new JLabel("Password: "));
+		fieldPassword = new JTextField(14);
+		p7.add(fieldPassword);
 
 		c.gridy++;
 		JPanel pBlank3 = new JPanel();
@@ -134,14 +132,6 @@ public class EnterTraveler extends JFrame{
 				String firstName = fieldFirstName.getText();
 				String lastName = fieldLastName.getText();
 				
-				int age;
-				try {
-				age = Integer.parseInt(fieldAge.getText());
-				}
-				catch(NumberFormatException ex) {
-					age = -1;
-				}
-				
 				SimpleDateFormat sqlDate = new SimpleDateFormat("YYYY-MM-DD");
 				java.sql.Date dateOfBirth;
 				java.util.Date dob;
@@ -152,41 +142,31 @@ public class EnterTraveler extends JFrame{
 				catch(ParseException parseEx) {
 					dateOfBirth = null; //new SimpleDateFormat("yyyy-mm-dd").parse("0000-00-00");
 				}
-				String placeOfDeparture = fieldPlaceOfDeparture.getText();
-				String destination = fieldDestination.getText();
+				String email = fieldEmail.getText();
+				String userName = fieldUserName.getText();
+				String password = fieldPassword.getText();
 				
-				java.sql.Date travelDate;
-				java.util.Date travDate;
-				try {
-					travDate = sqlDate.parse(fieldTravelDate.getText());
-					travelDate = new java.sql.Date(travDate.getTime());
-				}
-				catch(ParseException parseEx) {
-					travelDate = null; 
-				}
-				if (age == -1) 
-					labelMessage.setText("Age must be an integer.");
-				
-				else if (dateOfBirth == null)
+				if (dateOfBirth == null)
 					labelMessage.setText("Date of Birth: 'yyyy-mm-dd'");
 				
-				else if (travelDate == null)
-					labelMessage.setText("Travel Date: 'yyyy-mm-dd'");
-				
 				else if (firstName.isEmpty() || lastName.isEmpty() ||
-						placeOfDeparture.isEmpty() || destination.isEmpty()) {
+						email.isEmpty() || userName.isEmpty() || password.isEmpty()) {
 					labelMessage.setText("You must fill all fields.");
 				}
 				
 				else {
 					
-					Traveler traveler = new Traveler(0, firstName, lastName, age, dateOfBirth,
-							placeOfDeparture, destination, travelDate);
+					Traveler traveler = new Traveler(0, userName, password, firstName, 
+							lastName, dateOfBirth, email);
 						
 					AirlineDAO airDAO = new AirlineDAO();
 					airDAO.addToDB(traveler);
 					
-					dispose();
+					mainPanel.removeAll();
+					mainPanel.revalidate(); 
+					mainPanel.repaint();
+					
+					System.out.println("Implement Flight Selection Screen!");
 				}
 			}
 		});
@@ -197,14 +177,14 @@ public class EnterTraveler extends JFrame{
 		
 	}
 	
-	public static void main(String[] args) {
-		
-		SwingUtilities.invokeLater(new Runnable() {
-			@Override
-			public void run() {
-				new EnterTraveler().setVisible(true);
-			}
-		});
+//	public static void main(String[] args) {
+//		
+//		SwingUtilities.invokeLater(new Runnable() {
+//			@Override
+//			public void run() {
+//				new EnterTraveler().setVisible(true);
+//			}
+//		});
 //		SimpleDateFormat sqlDate = new SimpleDateFormat("YYYY-MM-DD");
 //		java.sql.Date travelDate;
 //		java.util.Date travDate;
@@ -213,6 +193,6 @@ public class EnterTraveler extends JFrame{
 //		Traveler abe = Traveler(1, "Abraham", "Lincoln", 99, travelDate, "ST LOUIS", "CHICAGO", travelDate);
 //		AirlineDAO airlineDAO;
 //		airlineDAO.addToDB(abe);
-	}
+//	}
 	
 }

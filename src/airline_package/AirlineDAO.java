@@ -36,6 +36,28 @@ public class AirlineDAO {
 		}
 	}
 
+	public int login(String username, String password) {
+		int id = -1;
+		String sql = "SELECT cust_id FROM customer WHERE username = '" + username +
+				"' AND password = '" + password + "';";
+		
+		Connection connection = null;
+		try {
+			connection = getConnection();
+			PreparedStatement statement = connection.prepareStatement(sql);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				id = resultSet.getInt("cust_id");
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			closeConnection(connection);
+		}
+		return id;
+	}
+	
+	
 	public List<Traveler> showPassengers() {
 		List<Traveler> result = new ArrayList<Traveler>();
 
