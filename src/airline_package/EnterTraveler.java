@@ -2,20 +2,16 @@ package airline_package;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.Border;
 
 public class EnterTraveler extends JFrame{
 	
@@ -30,7 +26,7 @@ public class EnterTraveler extends JFrame{
 	public EnterTraveler(JPanel mainPanel) {
 //		enterTView();
 //		
-//		setTitle("Passenger Information Form");
+		setTitle("Passenger Information Form");
 //		setDefaultCloseOperation(EXIT_ON_CLOSE);
 //		setSize(800, 450);
 //		// Centers frame to middle of screen
@@ -132,9 +128,10 @@ public class EnterTraveler extends JFrame{
 				String firstName = fieldFirstName.getText();
 				String lastName = fieldLastName.getText();
 				
-				SimpleDateFormat sqlDate = new SimpleDateFormat("YYYY-MM-DD");
+				SimpleDateFormat sqlDate = new SimpleDateFormat("yyyy-MM-dd");
 				java.sql.Date dateOfBirth;
 				java.util.Date dob;
+				
 				try {
 					dob = sqlDate.parse(fieldDateOfBirth.getText());
 					dateOfBirth = new java.sql.Date(dob.getTime());
@@ -160,16 +157,22 @@ public class EnterTraveler extends JFrame{
 							lastName, dateOfBirth, email);
 						
 					AirlineDAO airDAO = new AirlineDAO();
-					airDAO.addToDB(traveler);
+					int id = airDAO.addTraveler(traveler);
 					
 					mainPanel.removeAll();
 					mainPanel.revalidate(); 
 					mainPanel.repaint();
 					
 					System.out.println("Implement Flight Selection Screen!");
+					FlightSelectionScreen flightSelection = new FlightSelectionScreen(id);
 				}
 			}
 		});
+		
+		//  Figure out why -1 is returned (as id) from DAO when New Passenger is entered.
+		
+		
+		
 		
 
 		

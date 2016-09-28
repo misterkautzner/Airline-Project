@@ -4,26 +4,26 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
-public class LoginScreen extends JFrame {
+public class FlightSelectionScreen extends JFrame {
+
 	
 	private JTextField fieldUsername;
 	private JTextField fieldPassword;
 	private static AirlineDAO airlineDao = new AirlineDAO();
 
-	public LoginScreen() {
+	public FlightSelectionScreen(int id) {
 		createView();
 		
-		setTitle("JK Airlines");
+		setTitle("Flight Selection Screen");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(800, 450);
 
@@ -40,6 +40,9 @@ public class LoginScreen extends JFrame {
 		c.gridx = 0;
 		c.gridy = 0;
 		c.anchor = GridBagConstraints.LINE_END; 
+		
+		JComboBox flights = new JComboBox();
+		
 		
 		JPanel labelPanel = new JPanel();
 		panelForm.add(labelPanel, c);
@@ -151,12 +154,10 @@ public class LoginScreen extends JFrame {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				new LoginScreen().setVisible(true);
+				new FlightSelectionScreen(3).setVisible(true);
 			}
 		});
-	
-//		int id = airlineDao.login("John", "Kautzner");
-//		System.out.println(id);
+
 		
 	}
 }

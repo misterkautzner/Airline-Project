@@ -61,7 +61,7 @@ public class AirlineDAO {
 	public List<Traveler> showPassengers() {
 		List<Traveler> result = new ArrayList<Traveler>();
 
-		String sql = "SELECT * FROM flightinfo";
+		String sql = "SELECT * FROM customer";
 
 		Connection connection = null;
 		try {
@@ -69,14 +69,15 @@ public class AirlineDAO {
 			PreparedStatement statement = connection.prepareStatement(sql);
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
-				Traveler passenger = new Traveler(resultSet.getInt("passenger_id"), 
+				Traveler passenger = new Traveler(
+						resultSet.getInt("cust_id"), 
+						resultSet.getString("username"),
+						resultSet.getString("password"),
 						resultSet.getString("first_name"),
 						resultSet.getString("last_name"),
-						resultSet.getInt("age"),
 						resultSet.getDate("dob"),
-						resultSet.getString("departure"),
-						resultSet.getString("arrival"),
-						resultSet.getDate("travel_date"));
+						resultSet.getString("email")
+				);
 				result.add(passenger);
 				
 			}
@@ -88,47 +89,97 @@ public class AirlineDAO {
 		return result;
 	}
 	
-	public List<Traveler> addToDB(Traveler traveler) {
-		List<Traveler> result = new ArrayList<Traveler>();
-		int numPassengers = 0;
+	
+	public int addTraveler(Traveler traveler) {
+		int id = -1;
 
-		String sql = "SELECT COUNT(*) FROM flightinfo";
-
+		// Make sure someone doesn't already have that username
+		// And return cust_id if username isn't already taken
+		String getID = "SELECT cust_id FROM airline2.customer WHERE username = \"" + traveler.getUserName() + "\";";
+		
+		// Insert the new customer
+		String insertTraveler = "INSERT INTO airline2.customer " +
+						"(username, password, first_name, last_name, dob, email) " +
+						"VALUES (\"" + traveler.getUserName() + 
+						"\", \"" + traveler.getPassword() +
+						"\", \"" + traveler.getFirstName() +
+						"\", \"" + traveler.getLastName() +
+						"\", '" + traveler.getDOB() +
+						"', \"" + traveler.getEmail() + 
+						"\");";
+	
 		Connection connection = null;
 		try {
 			connection = getConnection();
-			PreparedStatement statement = connection.prepareStatement(sql);
-			ResultSet resultSet = statement.executeQuery();
-			resultSet.next();
-			numPassengers = resultSet.getInt("COUNT(*)");
 			
-			String table = "";
-			if (numPassengers < 25) {
-				table = "flightinfo";
-			} else { table = "waitinglist"; }
+			PreparedStatement statement = connection.prepareStatement(getID); //  Check DB for username ------------------------
+			ResultSet idTaken = statement.executeQuery();
+			if (idTaken.next()) {
+				return -1;   //  If there are results, username was already taken
+			}
 			
-			String insertStatement = "INSERT INTO " + table +
-					" (first_name, last_name, age, dob, departure, arrival, travel_date) VALUES (\"" + 
-					traveler.getFirstName() +
-					"\", \"" + traveler.getLastName() +
-					"\", " + traveler.getAge() +
-					", '" + traveler.getDOB() +
-					"', \"" + traveler.getDeparture() + 
-					"\", \"" + traveler.getDestination() + 
-					"\", '" + traveler.getTravelDate() +
-					"');";
-					
-			PreparedStatement prepInsert = connection.prepareStatement(insertStatement);
-			prepInsert.executeUpdate();
-
+			statement = connection.prepareStatement(insertTraveler);  //  Insert new Traveler -----------------------------
+			statement.executeUpdate();
+			statement.closeOnCompletion();	// This is needed to commit the execute.
+			
+			statement = connection.prepareStatement(getID);  //  Get the id for the new user ---------------------------
+			ResultSet cust_id = statement.executeQuery();
+			if (cust_id.next()) {
+				id = cust_id.getInt("cust_id");
+			}			
 			
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		} finally {
 			closeConnection(connection);
 		}
-		return showPassengers();
+		return id;
 	}
+	
+//	public List<Traveler> addToDB(Traveler traveler) {
+//		List<Traveler> result = new ArrayList<Traveler>();
+//		int numPassengers = 0;
+//
+//		String sql = "SELECT COUNT(*) FROM customer";
+//
+//		Connection connection = null;
+//		try {
+//			connection = getConnection();
+//			PreparedStatement statement = connection.prepareStatement(sql);
+//			ResultSet resultSet = statement.executeQuery();
+//			resultSet.next();
+//			numPassengers = resultSet.getInt("COUNT(*)");
+//			
+//			String table = "";
+//			
+//			System.out.println("Need to fix num passengers in addToDB()");
+//			
+//			if (numPassengers < 25) {
+//				table = "flightinfo";
+//			} else { table = "waitinglist"; }
+//			
+//			String insertStatement = "INSERT INTO " + table +
+//					" (first_name, last_name, age, dob, departure, arrival, travel_date) VALUES (\"" + 
+//					traveler.getFirstName() +
+//					"\", \"" + traveler.getLastName() +
+//					"\", " + traveler.getAge() +
+//					", '" + traveler.getDOB() +
+//					"', \"" + traveler.getDeparture() + 
+//					"\", \"" + traveler.getDestination() + 
+//					"\", '" + traveler.getTravelDate() +
+//					"');";
+//					
+//			PreparedStatement prepInsert = connection.prepareStatement(insertStatement);
+//			prepInsert.executeUpdate();
+//
+//			
+//		} catch (SQLException ex) {
+//			ex.printStackTrace();
+//		} finally {
+//			closeConnection(connection);
+//		}
+//		return showPassengers();
+//	}
 	
 	public List<Traveler> cancelFlight(Traveler traveler) {
 		List<Traveler> result = new ArrayList<Traveler>();
